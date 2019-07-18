@@ -1,55 +1,32 @@
 import React, { Component } from 'react';
-import axios from 'axios'
+import axios from '../../axios'
+import {Route,Link} from 'react-router-dom'
 
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
+import Posts from './Posts/Posts'
+import NewPost from './NewPost/NewPost'
 
 class Blog extends Component {
-
-    state = {
-        posts: [],
-        stateSelectedId: null
-    }
-
-    componentDidMount() {
-        axios.get('http://jsonplaceholder.typicode.com/posts')
-            .then(res => {
-                const posts = res.data.slice(0,4)
-                this.setState({
-                    posts
-                })
-            })
-    }
-
-    postSelectedHandler = (id) => {
-        this.setState({
-            stateSelectedId: id
-        })
-    }
-
     render () {
-        const posts = this.state.posts.map(post => {
-            return (
-                <Post 
-                    key={post.id} 
-                    {...post}
-                    clicked={() => this.postSelectedHandler(post.id)}
-                />
-            )
-        })
+        
         return (
-            <div>
-                <section className="Posts">
-                    {posts}
-                </section>
-                <section>
-                    <FullPost id={this.state.stateSelectedId}/>
-                </section>
-                <section>
-                    <NewPost />
-                </section>
+            <div className="Blog">
+                <header>
+                    <nav>
+                        <ul>
+                            <li><Link to="/">Home</Link></li>
+                            <li><Link to={{
+                                pathname: '/new-post',
+                                hash: '#submit',
+                                search: '?quick-submit=true'
+                            }}>New</Link></li>
+                        </ul>
+                    </nav>
+                </header>
+                {/* <Route path="/" exact render={() => <Posts></Posts>}></Route>
+                <Route path="/" exact render={() => <Posts></Posts>}></Route> */}
+                <Route path="/" exact component={Posts}></Route>
+                <Route path="/new-post" component={NewPost}></Route>
             </div>
         );
     }

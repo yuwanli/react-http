@@ -1,13 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component,Suspense } from 'react';
 // import axios from '../../axios'
 import {Route,NavLink,Switch} from 'react-router-dom'
 
 import './Blog.css';
-import Posts from './Posts/Posts'
+// import Posts from './Posts/Posts'
 import asyncComponent from '../../hoc/asyncComponent'
 
+// 自定义异步组件
 const asyncNewPost = asyncComponent(() => {
     return import('./NewPost/NewPost')
+})
+
+// 使用React.lazy实现异步组件 组合Suspense使用
+const Posts = React.lazy(() => {
+    return import('./Posts/Posts')
 })
 
 class Blog extends Component {
@@ -35,7 +41,11 @@ class Blog extends Component {
                     {
                         this.state.auth ? <Route path="/new-post" component={asyncNewPost}></Route> : null
                     }
-                    <Route path="/" component={Posts}></Route>
+                    <Route path="/" render={() => 
+                        <Suspense fallback={<div>...loading</div>}>
+                            <Posts></Posts>
+                        </Suspense>
+                    }></Route>
                 </Switch>
             </div>
         );

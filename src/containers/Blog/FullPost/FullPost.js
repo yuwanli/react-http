@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from '../../../axios'
-import {} from 'react-router-dom'
+// import {} from 'react-router-dom'
 
 import './FullPost.css';
 
@@ -10,10 +10,18 @@ class FullPost extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props)
+        console.log('[FullPost] componentDidMount') 
+        this.loadData()
+    }
+    componentDidUpdate() {
+        console.log('[FullPost] componentDidUpdate') 
+        this.loadData()
+    }
+
+    loadData() {
         const id = this.props.match.params.id
         if (id) {
-            if (!this.state.loadedPost || ( this.state.loadedPost && this.state.loadedPost.id !== id)) {
+            if (!this.state.loadedPost || ( this.state.loadedPost && this.state.loadedPost.id !== +id)) {
                 axios.get('/posts/' + id)
                 .then(res => {
                     this.setState({loadedPost: res.data})
@@ -23,7 +31,7 @@ class FullPost extends Component {
     }
 
     handleDelete = () => {
-        axios.delete('/posts/' + this.props.id).then(res => console.log(res))
+        axios.delete('/posts/' + this.props.match.params.id).then(res => console.log(res))
     }
     render () {
         let post = <p style={{textAlign: 'center'}}>Please select a Post!</p>;

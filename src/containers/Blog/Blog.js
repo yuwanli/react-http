@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 // import axios from '../../axios'
-import {Route,NavLink} from 'react-router-dom'
+import {Route,NavLink,Switch} from 'react-router-dom'
 
 import './Blog.css';
 import Posts from './Posts/Posts'
-import NewPost from './NewPost/NewPost'
-import FullPost from './FullPost/FullPost'
+import asyncComponent from '../../hoc/asyncComponent'
+
+const asyncNewPost = asyncComponent(() => {
+    return import('./NewPost/NewPost')
+})
 
 class Blog extends Component {
+    state = {
+        auth: true
+    }
     render () {
         return (
             <div className="Blog">
@@ -25,9 +31,12 @@ class Blog extends Component {
                 </header>
                 {/* <Route path="/" exact render={() => <Posts></Posts>}></Route>
                 <Route path="/" exact render={() => <Posts></Posts>}></Route> */}
-                <Route path="/" exact component={Posts}></Route>
-                <Route path="/new-post" component={NewPost}></Route>
-                <Route path="/post/:id" component={FullPost}></Route>
+                <Switch>
+                    {
+                        this.state.auth ? <Route path="/new-post" component={asyncNewPost}></Route> : null
+                    }
+                    <Route path="/" component={Posts}></Route>
+                </Switch>
             </div>
         );
     }
